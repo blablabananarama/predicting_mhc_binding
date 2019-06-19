@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-data_path = "../dataset/A0101/"
+data_path = "/home/jonas/Documents/algo_project/predicting_mhc_binding/dataset/A0101/"
 
 
 np.random.seed(0)
