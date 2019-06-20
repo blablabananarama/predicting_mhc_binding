@@ -26,9 +26,6 @@ def read_pep(filename, MAX_PEP_SEQ_LEN):
     return pep_aa, target
 
 
-
-
-
 def read_blosum_MN(filename):
     '''
     read in BLOSUM matrix
@@ -37,7 +34,6 @@ def read_blosum_MN(filename):
     returns:
         - blosum : dictionnary AA -> blosum encoding (as list)
     '''
-    
     # read BLOSUM matrix:
     blosumfile = open(filename, "r")
     blosum = {}
@@ -71,15 +67,13 @@ def read_blosum_MN(filename):
     blosumfile.close()
     return(blosum)
 
-
-
 def encode_pep(blosum, Xin, max_pep_seq_len):
     '''
     encode AA seq of peptides using BLOSUM50
     parameters:
-        - Xin : list of peptide sequences in AA
+        - X_in : list of peptide sequences in AA
     returns:
-        - Xout : encoded peptide seuqneces (batch_size, max_pep_seq_len, n_features)
+        - X_out : encoded peptide seuqneces (batch_size, max_pep_seq_len, n_features)
     '''
     # read encoding matrix:
     n_features = len(blosum['A'])
