@@ -125,13 +125,13 @@ def Amazing_DCNN(X_train, y_train, X_test, y_test):
     print("Train:",len(TrainLoss))         
     print("Test:",len(TestLoss)) 
     
-    sns.set(color_codes=True)
-    plt.figure(figsize=(13, 7))
-    ax = sns.lineplot(x=EpochList, y=TestLoss,label="Test Loss").set_title('Test Loss', fontsize=20)
-    plt.plot(TrainLoss,label="Train Loss")
-    plt.legend(fontsize='x-large', title_fontsize=40)
-    plt.xlabel("Epochs", fontsize=20)
-    plt.ylabel("Loss", fontsize=20)
+    #sns.set(color_codes=True)
+    #plt.figure(figsize=(13, 7))
+    #ax = sns.lineplot(x=EpochList, y=TestLoss,label="Test Loss").set_title('Test Loss', fontsize=20)
+    #plt.plot(TrainLoss,label="Train Loss")
+    #plt.legend(fontsize='x-large', title_fontsize=40)
+    #plt.xlabel("Epochs", fontsize=20)
+   # plt.ylabel("Loss", fontsize=20)
     
     y_pred = model(torch.from_numpy(X_test[:,:,:]).float())
     
