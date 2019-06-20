@@ -31,14 +31,12 @@ for i in range(0,5):
     y_test = np.array(y_test_raw)
    
     print(X_test[0])
-    train_model: takes training and test arrays, gives accuracy score and model object
+    # train_model: takes training and test arrays, gives accuracy score and model object
     
-    model_performance, model = train_model(X_train, y_train, X_test, y_test)
+    pcc, mse = train_model(X_train, y_train, X_test, y_test)
     
-    model_performance = 1
-    best_model = "b"
-    if model_performance > best_performance:
-        best_performance = model_performance
-        best_model = model
+    if model_performance < best_performance:
+        best_performance = mse 
+     #   best_model = model
         
     
