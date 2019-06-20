@@ -96,26 +96,20 @@ def Amazing_DCNN(X_train, y_train, X_test, y_test):
     for epoch in range(num_epochs):
         model.train()
         EpochList.append(1+len(EpochList))
-        
-        for i, data in enumerate(train_dl.batch_sampler):
-            
+        for i, data in enumerate(train_dl.batch_sampler):    
             # Zero the optimizer
-            optimizer.zero_grad()
-            
+            optimizer.zero_grad()    
             # GRAB INFORMATION
             seqs = torch.from_numpy(X_train[data,:,:]) 
             labels = torch.from_numpy(y_train[data])
-
             #FORWARD PASS
             outputs = model(seqs.float())
             loss = criterion(outputs,labels.float())   
-                  
             #BACKPROP & ADAM OPTIMIZATION     
             loss.backward(loss)
             optimizer.step()
         TrainLoss.append(loss.item())
-
-        print(np.around(TrainLoss[-1]))  
+        print(TrainLoss[-1])  
         
         model.eval()
         with torch.no_grad():
@@ -123,19 +117,26 @@ def Amazing_DCNN(X_train, y_train, X_test, y_test):
                 test_seqs = torch.from_numpy(X_test[data,:,:])
                 test_labels = torch.from_numpy(y_test[data])
                 y_ = model(test_seqs.float())  
+                
             TestLoss.append(criterion(y_,test_labels.float()).item())
-    
+        
+        
     print("Epoch:",len(EpochList))
     print("Train:",len(TrainLoss))         
     print("Test:",len(TestLoss)) 
+    
     sns.set(color_codes=True)
     plt.figure(figsize=(13, 7))
     ax = sns.lineplot(x=EpochList, y=TestLoss,label="Test Loss").set_title('Test Loss', fontsize=20)
-    plt.plot(LossList,label="Train Loss")
+    plt.plot(TrainLoss,label="Train Loss")
     plt.legend(fontsize='x-large', title_fontsize=40)
     plt.xlabel("Epochs", fontsize=20)
     plt.ylabel("Loss", fontsize=20)
     
+    y_pred = model(torch.from_numpy(X_test[:,:,:]).float())
+    
+    return TrainLoss[-1], TestLoss[-1], y_test, y_pred 
 #%%
 print(Amazing_DCNN(X_train, y_train, X_test, y_test))
 
+#%%
