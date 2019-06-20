@@ -1,6 +1,6 @@
-from DCNN import *
-from sklearn.metrics import roc_auc_score
-
+from util.DCNN import Amazing_DCNN
+from scipy.stats import pearsonr 
+from sklearn.metrics import mean_squared_error
 
 
 
@@ -18,13 +18,15 @@ def train_model(X_train, y_train, X_test, y_test, model_type):
     '''
 
     if (model_type == "DCNN"):
-        y_train_loss, y_test_loss = Amazing_DCNN(X_train, y_train, X_test, y_test) 
+        y_train_loss, y_test_loss, t_test, y_pred = Amazing_DCNN(X_train, y_train, X_test, y_test) 
     elif(model_type == "PEN"):
         pass
-
-    y_train_loss, y_test_loss, model = Amazing_DCNN(X_train, y_train, X_test, y_test) 
+    
+    # train the network, predict the output
    # compute the auc of the model 
-    auc_score = roc_auc_score(y_test, y_test_loss)
-     
+    pcc = 2
+    #pcc = pearsonr(t_test, y_pred)
+    mse = mean_squared_error(t_test, y_pred)
+    
+    return(pcc, mse)
 
-    return(auc_score, model)
