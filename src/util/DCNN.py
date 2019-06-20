@@ -16,11 +16,12 @@ from torch.autograd import Variable
 import matplotlib.pyplot as plt
 import seaborn as sns; sns.set()
 from IPython.core.debugger import set_trace
-from i_o import *
+from util.i_o import *
 
 MAX_PEP_SEQ_LEN = 9
 max_pep_seq_len = 9
 
+'''
 ###  NAVIGATE
 os.chdir("../")
 os.chdir("../")
@@ -41,6 +42,8 @@ X_train = encode_pep(blosum,X_train_raw ,max_pep_seq_len).astype(float)
 y_train = np.array(y_train_raw).astype(float)
 X_test = encode_pep(blosum,X_test_raw ,max_pep_seq_len).astype(float)
 y_test = np.array(y_test_raw).astype(float)
+
+'''
 
 #%%
 def Amazing_DCNN(X_train, y_train, X_test, y_test):
