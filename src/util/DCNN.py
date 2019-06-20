@@ -16,7 +16,7 @@ from torch.autograd import Variable
 import matplotlib.pyplot as plt
 import seaborn as sns; sns.set()
 from IPython.core.debugger import set_trace
-from i_o import *
+from util.i_o import *
 
 MAX_PEP_SEQ_LEN = 9
 max_pep_seq_len = 9
@@ -47,7 +47,7 @@ y_test = np.array(y_test_raw).astype(float)
 
 #%%
 def Amazing_DCNN(X_train, y_train, X_test, y_test):
-
+    warnings.filterwarnings("ignore")
     X_train = np.transpose(X_train,(0,2,1))
     X_test = np.transpose(X_test,(0,2,1))
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -127,7 +127,7 @@ def Amazing_DCNN(X_train, y_train, X_test, y_test):
     print("Epoch:",len(EpochList))
     print("Train:",len(TrainLoss))         
     print("Test:",len(TestLoss)) 
-    
+    '''  
     sns.set(color_codes=True)
     plt.figure(figsize=(13, 7))
     ax = sns.lineplot(x=EpochList, y=TestLoss,label="Test Loss").set_title('Test Loss', fontsize=20)
@@ -135,11 +135,10 @@ def Amazing_DCNN(X_train, y_train, X_test, y_test):
     plt.legend(fontsize='x-large', title_fontsize=40)
     plt.xlabel("Epochs", fontsize=20)
     plt.ylabel("Loss", fontsize=20)
-    
+    '''    
     y_pred = model(torch.from_numpy(X_test[:,:,:]).float()).detach().numpy()
-   # return TrainLoss[-1], TestLoss[-1], y_test, y_pred 
+    return TrainLoss[-1], TestLoss[-1], y_test, y_pred 
 #%%
-print(Amazing_DCNN(X_train, y_train, X_test, y_test))
 #%%
 
 #%%

@@ -1,7 +1,7 @@
 from util.DCNN import Amazing_DCNN
 from scipy.stats import pearsonr 
 from sklearn.metrics import mean_squared_error
-
+from sklearn.metrics import roc_auc_score
 
 
 def train_model(X_train, y_train, X_test, y_test, model_type):
@@ -27,6 +27,8 @@ def train_model(X_train, y_train, X_test, y_test, model_type):
     pcc = 2
     #pcc = pearsonr(t_test, y_pred)
     mse = mean_squared_error(t_test, y_pred)
+    auc = roc_auc_score(t_test, y_pred)
+    print(t_test)
+    print(y_pred)
+    return(pcc, mse, auc)
     
-    return(pcc, mse)
-
