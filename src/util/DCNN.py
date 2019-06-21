@@ -45,8 +45,11 @@ y_test = np.array(y_test_raw).astype(float)
 
 '''
 
+
+
+
 #%%
-def Amazing_DCNN(X_train, y_train, X_test, y_test):
+def Amazing_DCNN(X_train, y_train, X_test, y_test, model_name):
     warnings.filterwarnings("ignore")
     X_train = np.transpose(X_train,(0,2,1))
     X_test = np.transpose(X_test,(0,2,1))
@@ -137,7 +140,11 @@ def Amazing_DCNN(X_train, y_train, X_test, y_test):
     plt.ylabel("Loss", fontsize=20)
     '''    
     y_pred = model(torch.from_numpy(X_test[:,:,:]).float()).detach().numpy()
-    return TrainLoss[-1], TestLoss[-1], y_test, y_pred 
+    model_path = os.path.abspath(os.path.join(__file__,"../../../dataset/models"))
+    model_path =  model_path + "/" + "_" +model_name + "_" + "model"
+    torch.save(model.state_dict(), model_path)
+    #torch.save(model, model_path)
+    return TrainLoss[-1], TestLoss[-1], y_test, y_pred, model_path
 #%%
 #%%
 

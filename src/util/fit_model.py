@@ -4,7 +4,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import roc_auc_score
 
 
-def train_model(X_train, y_train, X_test, y_test, model_type):
+def train_model(X_train, y_train, X_test, y_test, model_type, model_name):
     '''
     This function trains different types of model specified 
      - X_train: training data set
@@ -18,7 +18,7 @@ def train_model(X_train, y_train, X_test, y_test, model_type):
     '''
 
     if (model_type == "DCNN"):
-        y_train_loss, y_test_loss, t_test, y_pred = Amazing_DCNN(X_train, y_train, X_test, y_test) 
+        y_train_loss, y_test_loss, t_test, y_pred, path_to_model = Amazing_DCNN(X_train, y_train, X_test, y_test, model_name) 
     elif(model_type == "PEN"):
         pass
     
@@ -30,5 +30,5 @@ def train_model(X_train, y_train, X_test, y_test, model_type):
     auc = roc_auc_score(t_test, y_pred)
     print(t_test)
     print(y_pred)
-    return(pcc, mse, auc)
+    return(pcc, mse, auc, path_to_model)
     

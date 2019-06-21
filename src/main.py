@@ -3,6 +3,15 @@ from util.fit_model import *
 import numpy as np
 import matplotlib.pyplot as plt
 import os.path as path
+#from util.DCNN import *
+
+
+
+
+
+
+
+
 
 
 data_path = path.abspath(path.join(__file__,"../../dataset/"))
@@ -17,9 +26,11 @@ best_performance = None
 model = None
 threshold = 1-np.log(500)/np.log(50000)
 
-current_folder = data_path + "/A1101"
+tr_folder = "A1101"
+current_folder = data_path + "/" + tr_folder
 for i in range(0,5):
-    tr_file = current_folder + "/f00" + str(i)
+    cur_file = "f00" + str(i)
+    tr_file = current_folder + "/" + cur_file
     te_file = current_folder + "/c00" + str(i)
     X_train_raw, y_train_raw = read_pep(tr_file, len_pep)
     X_test_raw, y_test_raw = read_pep(te_file, len_pep)
@@ -49,11 +60,16 @@ for i in range(0,5):
     print(y_test)
     # train_model: takes training and test arrays, gives accuracy score and model object
     
-    pcc, mse, auc = train_model(X_train, y_train, X_test, y_test, "DCNN")
+    pcc, mse, auc, path_to_model= train_model(X_train, y_train, X_test, y_test, "DCNN", tr_folder + cur_file)
+    
     print(mse)
     print(auc)
-    if model_performance < best_performance:
-        best_performance = mse 
+    
+    #cur_model = torch.load(path_to_model)
+    #cur_model.eval()
+
+    #if model_performance < best_performance:
+     #   best_performance = mse 
      #   best_model = model
         
-    
+
