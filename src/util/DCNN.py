@@ -44,7 +44,27 @@ X_test = encode_pep(blosum,X_test_raw ,max_pep_seq_len).astype(float)
 y_test = np.array(y_test_raw).astype(float)
 
 '''
-
+    #### ARCHITECTURE ####
+class Network(nn.Module):
+    def __init__(self):
+        super(Network, self).__init__()
+        self.drop_out = nn.Dropout(0.1)
+        self.drop_out_fc = nn.Dropout(0.7)
+        self.bn1 = nn.BatchNorm1d(44)
+        self.conv1 = nn.Conv1d(in_channels=21, out_channels=44, kernel_size=2, padding=0)
+        self.conv2 = nn.Conv1d(in_channels=44, out_channels=44, kernel_size=4, padding=0)
+        self.fc1 = nn.Linear(in_features=(220), out_features=50, bias =True)
+        self.fc2 = nn.Linear(in_features=(50), out_features=1, bias =True)
+    
+        ### FORWARD FUNCTION WITH DROP IN EVERY LAYER EXCEPT OUTPUT-LAYER   		
+    def forward(self,tensor):
+        out_t = F.leaky_relu(self.drop_out(self.conv1(tensor)))  
+        out_t = F.leaky_relu(self.bn1(self.drop_out(self.conv2(out_t))) ) 
+        out_t = out_t.view(out_t.size(0),-1)
+        out_t = F.relu(self.drop_out_fc(self.fc1(out_t)))
+        out_t = F.sigmoid(self.fc2(out_t))
+        out_t = torch.reshape(out_t,(len(out_t),1))
+        return out_t   
 
 
 
@@ -60,29 +80,7 @@ def Amazing_DCNN(X_train, y_train, X_test, y_test, model_name):
     tensor = torch.Tensor([batch_size,21,9])
     tensor = tensor.float()
     print("tensor:",tensor)
-    
-        #### ARCHITECTURE ####
-    class Network(nn.Module):
-        def __init__(self):
-            super(Network, self).__init__()
-            self.drop_out = nn.Dropout(0.1)
-            self.drop_out_fc = nn.Dropout(0.7)
-            self.bn1 = nn.BatchNorm1d(44)
-            self.conv1 = nn.Conv1d(in_channels=21, out_channels=44, kernel_size=2, padding=0)
-            self.conv2 = nn.Conv1d(in_channels=44, out_channels=44, kernel_size=4, padding=0)
-            self.fc1 = nn.Linear(in_features=(220), out_features=50, bias =True)
-            self.fc2 = nn.Linear(in_features=(50), out_features=1, bias =True)
-    
-            ### FORWARD FUNCTION WITH DROP IN EVERY LAYER EXCEPT OUTPUT-LAYER   		
-        def forward(self,tensor):
-            out_t = F.leaky_relu(self.drop_out(self.conv1(tensor)))  
-            out_t = F.leaky_relu(self.bn1(self.drop_out(self.conv2(out_t))) ) 
-            out_t = out_t.view(out_t.size(0),-1)
-            out_t = F.relu(self.drop_out_fc(self.fc1(out_t)))
-            out_t = F.sigmoid(self.fc2(out_t))
-            out_t = torch.reshape(out_t,(len(out_t),1))
-            return out_t   
-   
+  
     model = Network().to(device)
     model = model.float()
     num_epochs = 50
@@ -142,8 +140,8 @@ def Amazing_DCNN(X_train, y_train, X_test, y_test, model_name):
     y_pred = model(torch.from_numpy(X_test[:,:,:]).float()).detach().numpy()
     model_path = os.path.abspath(os.path.join(__file__,"../../../dataset/models"))
     model_path =  model_path + "/" + "_" +model_name + "_" + "model"
-    torch.save(model.state_dict(), model_path)
-    #torch.save(model, model_path)
+    #torch.save(model.state_dict(), model_path)
+    torch.save(model, model_path)
     return TrainLoss[-1], TestLoss[-1], y_test, y_pred, model_path
 #%%
 #%%
