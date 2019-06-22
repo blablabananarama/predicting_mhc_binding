@@ -1,4 +1,6 @@
 from util.DCNN import Amazing_DCNN
+from util.ANN import ANN
+from util.RandomForest import RandomForest
 from scipy.stats import pearsonr 
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import roc_auc_score
@@ -20,15 +22,14 @@ def train_model(X_train, y_train, X_test, y_test, model_type, model_name, shuffl
     if (model_type == "DCNN"):
         y_train_loss, y_test_loss, t_test, y_pred, path_to_model = Amazing_DCNN(X_train, y_train, X_test, y_test, model_name) 
     elif(model_type == "ANN"):
-        y_train_loss, y_test_loss, t_test, y_pred, path_to_model = ANN(X_train, y_train, X_test, y_test, shuffle) 
-    
+        y_train_loss, y_test_loss, t_test, y_pred, path_to_model = ANN(X_train, y_train, X_test, y_test, model_name) 
+    elif(model_type == "RF"):
+        y_pred, auc  = RandomForest(X_train, y_train, X_test, y_test, model_name) 
+        path_to_model = "rf"
+        t_test = y_test
         # train the network, predict the output
    # compute the auc of the model 
-    pcc = 2
-    #pcc = pearsonr(t_test, y_pred)
     mse = mean_squared_error(t_test, y_pred)
     auc = roc_auc_score(t_test, y_pred)
-    print(t_test)
-    print(y_pred)
-    return(pcc, mse, auc, path_to_model)
+    return(mse, auc, path_to_model)
     

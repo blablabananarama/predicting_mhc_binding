@@ -53,7 +53,7 @@ for i in range(0,5):
     print(y_test)
     # train_model: takes training and test arrays, gives accuracy score and model object
     
-    pcc, mse, auc, path_to_model= train_model(X_train, y_train, X_test, y_test, "ANN", tr_folder + cur_file)
+    mse, auc, path_to_model= train_model(X_train, y_train, X_test, y_test, "RF", tr_folder + cur_file)
     
     print(mse)
     print(auc)

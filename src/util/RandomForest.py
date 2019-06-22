@@ -9,7 +9,7 @@ from numpy.linalg import inv
 import matplotlib.pyplot as plt
 import seaborn as sns; sns.set()
 from IPython.core.debugger import set_trace
-from i_o import *
+from util.i_o import *
 from sklearn.metrics import roc_auc_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.datasets import make_classification
@@ -77,6 +77,5 @@ def RandomForest(X_train, y_train, X_test, y_test, model_name):
         
         print("Gridsearching:", np.around(CHANGE/11,decimals=2),"%")
         
-    return print(y_test_pred,FINAL_AUC)
+    return y_test_pred,FINAL_AUC
 
-print(RandomForest(X_train,y_train, X_test, y_test,"RandomForest"))

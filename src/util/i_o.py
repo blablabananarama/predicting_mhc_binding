@@ -87,3 +87,12 @@ def encode_pep(blosum, Xin, max_pep_seq_len):
         for j in range(0, len(Xin[i])):
             Xout[i, j, :n_features] = blosum[ Xin[i][j] ]
     return Xout
+
+def encode_binary(list_of_values):
+    threshold = 1-np.log(500)/np.log(50000)
+    for i in range(1, len(list_of_values)):
+         if list_of_values[i] > threshold:
+             list_of_values[i] = 1 
+         else:
+             list_of_values[i] = 0 
+
