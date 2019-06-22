@@ -25,7 +25,7 @@ def train_model(X_train, y_train, X_test, y_test, model_type, model_name, shuffl
         y_train_loss, y_test_loss, t_test, y_pred, path_to_model = ANN(X_train, y_train, X_test, y_test, model_name) 
     elif(model_type == "RF"):
         y_pred, auc  = RandomForest(X_train, y_train, X_test, y_test, model_name) 
-        path_to_model = "rf"
+        path_to_model = model_name
         t_test = y_test
         # train the network, predict the output
    # compute the auc of the model 

@@ -3,7 +3,7 @@ from util.fit_model import *
 import numpy as np
 import matplotlib.pyplot as plt
 import os.path as path
-#from util.DCNN import *
+from util.DCNN import *
 
 
 
@@ -37,7 +37,7 @@ for i in range(0,5):
     X_train_raw, y_train_raw = read_pep(tr_file, len_pep)
     X_test_raw, y_test_raw = read_pep(te_file, len_pep)
    
-    # encoding the data with blosum encoding as well as encoding it to binary
+    # encoding the data with blosum encoding as well as encoding it to binary X_train = encode_pep(blosum, X_train_raw, len_pep)
     X_train = encode_pep(blosum, X_train_raw, len_pep)
     y_train = np.array(y_train_raw, dtype=float)
    
@@ -52,16 +52,27 @@ for i in range(0,5):
 
     print(y_test)
     # train_model: takes training and test arrays, gives accuracy score and model object
-    
+    all_aucs=[]    
     mse, auc, path_to_model= train_model(X_train, y_train, X_test, y_test, "RF", tr_folder + cur_file)
+    all_aucs.append(auc)
+    mse, auc, path_to_model= train_model(X_train, y_train, X_test, y_test, "ANN", tr_folder + cur_file)
+    all_aucs.append(auc)
+    mse, auc, path_to_model= train_model(X_train, y_train, X_test, y_test, "DCNN", tr_folder + cur_file)
+    all_aucs.append(auc)
+
+
+
+
+
+
+    for j in range(0, len(all_aucs)):
+        if all_aucs[j] > best_performance:
+            best_performance = all_aucs[j] 
+            best_model = str(j) + str(i) 
     
-    print(mse)
-    print(auc)
+
     
-    if auc < best_performance:
-        best_performance = auc 
-        best_model = path_to_model 
        
-print("Best AUC: ", auc)
-print("Best Model: ", path_to_model)
+print("Best AUC: ", best_performance)
+print("Best Model: ", best_model)
 
