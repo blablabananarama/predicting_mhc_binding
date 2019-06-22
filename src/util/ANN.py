@@ -21,14 +21,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-#shuffle = True
-#discrete = True
+shuffle = True
+discrete = True
 
 
 def ANN(X_train, y_train, X_val, y_val, model_name):
     
-    EPOCHS = 100
-    MINI_BATCH_SIZE = 120
+    EPOCHS = 120
+    MINI_BATCH_SIZE = 100 
     n_features = X_train.shape[2]
     
     X_train = X_train.reshape(X_train.shape[0], -1)
@@ -84,7 +84,7 @@ def ANN(X_train, y_train, X_val, y_val, model_name):
     # create model
     model = Sequential()
     keras.layers.normalization.BatchNormalization(epsilon=1e-06, momentum=0.95, weights=None)
-    model.add(Dense(20*20, input_dim=MAX_PEP_SEQ_LEN * n_features, activation='relu', init='random_normal', kernel_regularizer=keras.regularizers.l2(l=0.1)))
+    model.add(Dense(20*20, input_dim=9 * n_features, activation='relu', init='random_normal', kernel_regularizer=keras.regularizers.l2(l=0.1)))
     model.add(Dense(200, activation='sigmoid', init='random_normal'))
     model.add(Dense(100, activation='sigmoid', init='random_normal'))
     model.add(Dense(1, activation='sigmoid', init='random_normal'))      # init = "uniform"

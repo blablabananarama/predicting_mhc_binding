@@ -12,7 +12,8 @@ import os.path as path
 
 
 
-
+#global discrete = True
+#global shuffle = True
 
 data_path = path.abspath(path.join(__file__,"../../dataset/"))
 
@@ -22,8 +23,8 @@ len_pep = 9
 
 '''This file contains the i/o as well as the fitting of the models and their validation'''
 
-best_performance = None 
-model = None
+best_performance = 0 
+model = "" 
 threshold = 1-np.log(500)/np.log(50000)
 
 tr_folder = "A1101"
@@ -52,16 +53,15 @@ for i in range(0,5):
     print(y_test)
     # train_model: takes training and test arrays, gives accuracy score and model object
     
-    pcc, mse, auc, path_to_model= train_model(X_train, y_train, X_test, y_test, "DCNN", tr_folder + cur_file)
+    pcc, mse, auc, path_to_model= train_model(X_train, y_train, X_test, y_test, "ANN", tr_folder + cur_file)
     
     print(mse)
     print(auc)
     
-    cur_model = torch.load(path_to_model)
-    cur_model.eval()
-
-    #if model_performance < best_performance:
-     #   best_performance = mse 
-     #   best_model = model
-        
+    if auc < best_performance:
+        best_performance = auc 
+        best_model = path_to_model 
+       
+print("Best AUC: ", auc)
+print("Best Model: ", path_to_model)
 
