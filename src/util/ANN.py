@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 
 
 shuffle = True
-discrete = True
+#discrete = False
 
 
 def ANN(X_train, y_train, X_val, y_val, model_name):
@@ -50,8 +50,8 @@ def ANN(X_train, y_train, X_val, y_val, model_name):
                 ys_c[i] = 1
         return ys_c
     
-    y_train = disc(y_train)
-    y_val = disc(y_val)
+    #y_train = disc(y_train)
+    #y_val = disc(y_val)
     
     #y_train_c = categoric(y_train).astype(str)
     #y_val_c = categoric(y_val).astype(str)
@@ -110,8 +110,8 @@ def ANN(X_train, y_train, X_val, y_val, model_name):
     #model_path = "work_bitch.h5"
     model.save(model_path)
     y_pred = model.predict(X_val)
-    if discrete:
-        y_pred =(y_pred > 0.5)    
+    #if discrete:
+    #    y_pred =(y_pred > 0.5)    
     return train_loss, test_loss, y_val, y_pred, model_path #y_real, y_predict, history
 
 #a,b,c,d,e = ANN(X_train, y_train, X_val, y_val, "ANN")

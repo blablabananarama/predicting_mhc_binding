@@ -29,7 +29,7 @@ current_folder = data_path + "/" + tr_folder
 RF_auc_list, RF_cc_list = [],[]
 ANN_auc_list, ANN_cc_list = [],[]
 DCNN_auc_list, DCNN_cc_list = [],[] 
-discrete = True
+discrete = False
 
 for i in range(0,2):
     # reading in the data of the current fold of training from the training and test files
@@ -57,15 +57,22 @@ for i in range(0,2):
     # train_model: takes training and test arrays, gives accuracy score and model object
         all_aucs=[]
         
-        mse, auc, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "RF", tr_folder + cur_file)
+        t_test, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "RF", tr_folder + cur_file)
+        mse = mean_squared_error(t_test, y_pred)
+        auc = roc_auc_score(t_test, y_pred)        
         all_aucs.append(auc)
         RF_auc_list.append(auc)
         
-        mse, auc, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "ANN", tr_folder + cur_file)
+        t_test, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "ANN", tr_folder + cur_file)
+        y_pred =(y_pred > 0.5)
+        mse = mean_squared_error(t_test, y_pred)
+        auc = roc_auc_score(t_test, y_pred)
         all_aucs.append(auc)
         ANN_auc_list.append(auc)
         
-        mse, auc, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "DCNN", tr_folder + cur_file)
+        t_test,y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "DCNN", tr_folder + cur_file)
+        mse = mean_squared_error(t_test, y_pred)
+        auc = roc_auc_score(t_test, y_pred)
         all_aucs.append(auc)
         DCNN_auc_list.append(auc)
     
@@ -84,13 +91,17 @@ for i in range(0,2):
         #all_ccs.append(corr)
         #RF_cc_list.append(corr)
         
-        mse, auc, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "ANN", tr_folder + cur_file)
-        corr, p_value = pearsonr(y_test, y_pred)
+        t_test, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "ANN", tr_folder + cur_file)
+        corr, p_value = pearsonr(t_test, y_pred)
+        print("THIS IS CC: {}".format(corr))
         all_ccs.append(corr)
         ANN_cc_list.append(corr)
         
-        mse, auc, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "DCNN", tr_folder + cur_file)
-        corr, p_value = pearsonr(y_test, y_pred)
+        t_test, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "DCNN", tr_folder + cur_file)
+        print(t_test)
+        print(y_pred)
+        t_test = t_test.reshape(len(t_test),1)
+        corr, p_value = pearsonr(t_test, y_pred)
         all_ccs.append(corr)
         DCNN_cc_list.append(corr)
         
