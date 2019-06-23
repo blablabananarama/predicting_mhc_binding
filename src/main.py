@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os.path as path
 from util.DCNN import *
+from scipy.stats import pearsonr
 
 
 #global discrete = True
@@ -25,9 +26,10 @@ threshold = 1-np.log(500)/np.log(50000)
 
 tr_folder = "A1101"
 current_folder = data_path + "/" + tr_folder
-RF_list = []
-ANN_list = []
-DCNN_list = [] 
+RF_auc_list, RF_cc_list = [],[]
+ANN_auc_list, ANN_cc_list = [],[]
+DCNN_auc_list, DCNN_cc_list = [],[] 
+discrete = True
 
 for i in range(0,2):
     # reading in the data of the current fold of training from the training and test files
@@ -41,35 +43,63 @@ for i in range(0,2):
     X_train = encode_pep(blosum, X_train_raw, len_pep)
     y_train = np.array(y_train_raw, dtype=float)
    
-    encode_binary(y_train)
+
 
     # encoding the data with blosum as well as encoding it to binary
     X_test = encode_pep(blosum, X_test_raw, len_pep)
     y_test = np.array(y_test_raw, dtype=float)
-   
-    # 
-    encode_binary(y_test) 
 
-    print(y_test)
+    if discrete:
+        encode_binary(y_train)
+        encode_binary(y_test) 
+
+        print(y_test)
     # train_model: takes training and test arrays, gives accuracy score and model object
-    all_aucs=[]
+        all_aucs=[]
+        
+        mse, auc, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "RF", tr_folder + cur_file)
+        all_aucs.append(auc)
+        RF_auc_list.append(auc)
+        
+        mse, auc, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "ANN", tr_folder + cur_file)
+        all_aucs.append(auc)
+        ANN_auc_list.append(auc)
+        
+        mse, auc, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "DCNN", tr_folder + cur_file)
+        all_aucs.append(auc)
+        DCNN_auc_list.append(auc)
     
-    mse, auc, path_to_model= train_model(X_train, y_train, X_test, y_test, "RF", tr_folder + cur_file)
-    all_aucs.append(auc)
-    RF_list.append(auc)
-    
-    mse, auc, path_to_model= train_model(X_train, y_train, X_test, y_test, "ANN", tr_folder + cur_file)
-    all_aucs.append(auc)
-    ANN_list.append(auc)
-    
-    mse, auc, path_to_model= train_model(X_train, y_train, X_test, y_test, "DCNN", tr_folder + cur_file)
-    all_aucs.append(auc)
-    DCNN_list.append(auc)
-
-    for j in range(0, len(all_aucs)):
-        if all_aucs[j] > best_performance:
-            best_performance = all_aucs[j] 
-            best_model = str(j) + str(i) 
+        for j in range(0, len(all_aucs)):
+            if all_aucs[j] > best_performance:
+                best_performance = all_aucs[j] 
+                best_model_auc = str(j) + str(i) 
+        
+    else: 
+        all_ccs=[]
+        
+        print(y_test)
+        
+        #mse, auc, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "RF", tr_folder + cur_file)
+        #corr, p_value = pearsonr(y_test, y_pred)
+        #all_ccs.append(corr)
+        #RF_cc_list.append(corr)
+        
+        mse, auc, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "ANN", tr_folder + cur_file)
+        corr, p_value = pearsonr(y_test, y_pred)
+        all_ccs.append(corr)
+        ANN_cc_list.append(corr)
+        
+        mse, auc, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "DCNN", tr_folder + cur_file)
+        corr, p_value = pearsonr(y_test, y_pred)
+        all_ccs.append(corr)
+        DCNN_cc_list.append(corr)
+        
+        
+        for j in range(0, len(all_ccs)):
+            if all_ccs[j] > best_performance:
+                best_performance = all_ccs[j] 
+                best_model_cc = str(j) + str(i) 
+        
 
 #%% 
 #Rf_Avg = np.average(RF_list)

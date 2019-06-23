@@ -31,5 +31,5 @@ def train_model(X_train, y_train, X_test, y_test, model_type, model_name, shuffl
    # compute the auc of the model 
     mse = mean_squared_error(t_test, y_pred)
     auc = roc_auc_score(t_test, y_pred)
-    return(mse, auc, path_to_model)
+    return(mse, auc, y_pred, path_to_model)
     
