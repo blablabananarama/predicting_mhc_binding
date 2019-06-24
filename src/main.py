@@ -9,6 +9,9 @@ from util.DCNN import *
 from scipy.stats import pearsonr
 from os import listdir
 import statistics
+import pandas as pd
+
+
 
 #global discrete = True
 #global shuffle = True
@@ -45,6 +48,7 @@ all_cc_DCNN = []
 all_auc_RF =[]
 all_auc_ANN = []
 all_auc_DCNN = []
+print(len(all_folders))
 
 for folder in all_folders:
     tr_folder = folder
@@ -52,9 +56,9 @@ for folder in all_folders:
     RF_auc_list, RF_cc_list = [],[]
     ANN_auc_list, ANN_cc_list = [],[]
     DCNN_auc_list, DCNN_cc_list = [],[] 
-    discrete = False
+    discrete = False 
 
-    for i in range(0,2):
+    for i in range(0,5):
         # reading in the data of the current fold of training from the training and test files
         try: 
             cur_file = "f00" + str(i)
@@ -135,22 +139,43 @@ for folder in all_folders:
                         best_model_cc = str(j) + str(i)
             
         
-            if discrete == False:
-                 all_cc_RF.append(np.mean(RF_cc_list))
-                 all_cc_ANN.append(np.mean(ANN_cc_list))
-                 all_cc_DCNN.append(np.mean(DCNN_cc_list))
-            else:
-                all_auc_RF.append(np.mean(RF_auc_list))
-                all_auc_ANN.append(np.mean(ANN_auc_list))
-                all_auc_DCNN.appendi(np.mean(DCNN_auc_list))
-
-            print(all_cc_DCNN)
-            print(all_cc_RF)
-            print(all_cc_ANN)
+            #if discrete == False:
+            #     all_cc_RF.append(np.mean(RF_cc_list))
+            #     all_cc_ANN.append(np.mean(ANN_cc_list))
+            #     all_cc_DCNN.append(np.mean(DCNN_cc_list))
+            #else:
+            #    all_auc_RF.append(np.mean(RF_auc_list))
+            #    all_auc_ANN.append(np.mean(ANN_auc_list))
+            ##    all_auc_DCNN.appendi(np.mean(DCNN_auc_list))
+            #print(all_cc_DCNN)
+            #print(all_cc_RF)
+            #print(all_cc_ANN)
         except Exception as e:
             data_exception.append(folder)
-            print(folder)
+            print("didn't work: ",folder)
             print(e)
+    
+     
+    print(folder)
+    
+    if discrete == False:
+        #all_cc_RF.append(np.max(RF_cc_list))
+        all_cc_ANN.append(np.max(ANN_cc_list))
+        all_cc_DCNN.append(np.max(DCNN_cc_list))
+        #print(all_cc_DCNN)
+        print(all_cc_RF)
+        print(all_cc_ANN)
+
+
+    else:
+        all_auc_RF.append(np.mean(RF_auc_list))
+        all_auc_ANN.append(np.mean(ANN_auc_list))
+        all_auc_DCNN.append(np.mean(DCNN_auc_list))
+        print(all_auc_DCNN)
+        print(all_auc_RF)
+        print(all_auc_ANN)
+
+
 
 #%% 
 #Rf_Avg = np.average(RF_list)
@@ -177,7 +202,26 @@ for folder in all_folders:
 #    plt.legend(fontsize='x-large', title_fontsize=40)
 #plt.xlabel("", fontsize=20)
 #plt.ylabel("Loss", fontsize=20)
-            
+
+
+mean_cc_RF = np.mean(all_cc_RF)
+mean_cc_ANN = np.mean(all_cc_ANN)
+mean_cc_DCNN = np.mean(all_cc_DCNN)
+mean_auc_RF = np.mean(all_auc_RF)
+mean_auc_ANN = np.mean(all_auc_ANN)
+mean_auc_DCNN = np.mean(all_auc_DCNN)
+
+data_all_cc = np.array([all_cc_ANN, all_cc_DCNN])
+data_all_auc = np.array([all_auc_RF, all_auc_ANN, all_auc_DCNN])
+all_cc_pd = pd.DataFrame(data_all_cc.T)
+all_auc_pd = pd.DataFrame(data_all_auc.T)
+if discrete == False:
+    all_cc = all_cc_pd.to_csv("/home/jonas/Documents/algo_project/predicting_mhc_binding/dataframe_cc.csv")
+else:
+    all_auc = all_auc_pd.to_csv("/home/jonas/Documents/algo_project/predicting_mhc_binding/dataframe_auc.csv")
+
+
+
 print("mean cc RF" ,np.mean(all_cc_RF))
 print("mean cc ANN",np.mean(all_cc_ANN))
 print("mean cc DCNN",np.mean(all_cc_DCNN))
@@ -188,5 +232,4 @@ print("mean auc DCNN",np.mean(all_auc_DCNN))
     
        
 print("Best AUC: ", best_performance)
-print("Best Model: ", best_model)
 
