@@ -95,4 +95,4 @@ def encode_binary(list_of_values):
              list_of_values[i] = 1 
          else:
              list_of_values[i] = 0 
-
+    return(list_of_values.astype('int'))

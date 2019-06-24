@@ -56,7 +56,7 @@ for folder in all_folders:
     RF_auc_list, RF_cc_list = [],[]
     ANN_auc_list, ANN_cc_list = [],[]
     DCNN_auc_list, DCNN_cc_list = [],[] 
-    discrete = False 
+    discrete = True 
 
     for i in range(0,5):
         # reading in the data of the current fold of training from the training and test files
@@ -78,9 +78,8 @@ for folder in all_folders:
             y_test = np.array(y_test_raw, dtype=float)
 
             if discrete:
-                encode_binary(y_train)
-                encode_binary(y_test) 
-
+                y_train = encode_binary(y_train)
+                y_test = encode_binary(y_test)
             # train_model: takes training and test arrays, gives accuracy score and model object
                 all_aucs=[]
                 
@@ -113,10 +112,10 @@ for folder in all_folders:
                 all_ccs=[]
                 
                 
-                #mse, auc, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "RF", tr_folder + cur_file)
-                #corr, p_value = pearsonr(y_test, y_pred)
-                #all_ccs.append(corr)
-                #RF_cc_list.append(corr)
+                mse, auc, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "RF", tr_folder + cur_file)
+                corr, p_value = pearsonr(y_test, y_pred)
+                all_ccs.append(corr)
+                RF_cc_list.append(corr)
                 
                 t_test, y_pred, path_to_model= train_model(X_train, y_train, X_test, y_test, "ANN", tr_folder + cur_file)
                 corr, p_value = pearsonr(t_test, y_pred)
@@ -159,18 +158,18 @@ for folder in all_folders:
     print(folder)
     
     if discrete == False:
-        #all_cc_RF.append(np.max(RF_cc_list))
+        all_cc_RF.append(np.max(RF_cc_list))
         all_cc_ANN.append(np.max(ANN_cc_list))
         all_cc_DCNN.append(np.max(DCNN_cc_list))
-        #print(all_cc_DCNN)
+        print(all_cc_DCNN)
         print(all_cc_RF)
         print(all_cc_ANN)
 
 
     else:
-        all_auc_RF.append(np.mean(RF_auc_list))
-        all_auc_ANN.append(np.mean(ANN_auc_list))
-        all_auc_DCNN.append(np.mean(DCNN_auc_list))
+        all_auc_RF.append(np.max(RF_auc_list))
+        all_auc_ANN.append(np.max(ANN_auc_list))
+        all_auc_DCNN.append(np.max(DCNN_auc_list))
         print(all_auc_DCNN)
         print(all_auc_RF)
         print(all_auc_ANN)
@@ -213,12 +212,12 @@ mean_auc_DCNN = np.mean(all_auc_DCNN)
 
 data_all_cc = np.array([all_cc_ANN, all_cc_DCNN])
 data_all_auc = np.array([all_auc_RF, all_auc_ANN, all_auc_DCNN])
-all_cc_pd = pd.DataFrame(data_all_cc.T)
-all_auc_pd = pd.DataFrame(data_all_auc.T)
+all_cc_pd = pd.DataFrame(data_all_cc.T, index=all_folders)
+all_auc_pd = pd.DataFrame(data_all_auc.T, index=all_folders)
 if discrete == False:
-    all_cc = all_cc_pd.to_csv("/home/jonas/Documents/algo_project/predicting_mhc_binding/dataframe_cc.csv")
+    all_cc = all_cc_pd.to_csv(data_path + "dataframe_cc.csv")
 else:
-    all_auc = all_auc_pd.to_csv("/home/jonas/Documents/algo_project/predicting_mhc_binding/dataframe_auc.csv")
+    all_auc = all_auc_pd.to_csv(data_path + "dataframe_auc.csv")
 
 
 

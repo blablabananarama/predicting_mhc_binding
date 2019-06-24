@@ -16,7 +16,7 @@ from keras.backend.tensorflow_backend import set_session
 import keras.backend as K
 from keras.models import load_model
 from scipy.stats import pearsonr
-
+from keras.layers import Dropout
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -87,10 +87,12 @@ def ANN(X_train, y_train, X_val, y_val, model_name):
     model.add(Dense(20*20, input_dim=9 * n_features, activation='relu', init='random_normal', kernel_regularizer=keras.regularizers.l2(l=0.1)))
     model.add(Dense(200, activation='sigmoid', init='random_normal'))
     model.add(Dense(100, activation='sigmoid', init='random_normal'))
+    model.add(Dropout(0.5))
+    adm = keras.optimizers.Adam(lr=0.001)
     model.add(Dense(1, activation='sigmoid', init='random_normal'))      # init = "uniform"
     
     # Compile model
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])     # binary_crossentropy , mse
+    model.compile(loss='binary_crossentropy', optimizer=adm, metrics=['accuracy'])     # binary_crossentropy , mse
     
     
     # In[45]:
